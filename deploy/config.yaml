@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    kasten.io/config: dataservice
+  name: dbconfig
+data:
+  dataservice.type: postgres
+  postgres.manager: awsrds
+  postgres.host: testinstance.example.us-west-2.rds.amazonaws.com
+  postgres.databases: mypgsqldb
+  postgres.user: postgres
+  postgres.secret: dbcreds # name of K8s secret in the same namespace

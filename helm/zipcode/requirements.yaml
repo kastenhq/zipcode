@@ -1,0 +1,11 @@
+dependencies:
+- name: kanister-postgresql
+  version: 0.14.0
+  repository: https://charts.kanister.io/
+  alias: psql
+  condition: psql.enabled
+
+- name: profile
+  version: "0.1.0"
+  condition: psql.profile.create
+  repository: "https://charts.kanister.io"

@@ -1,0 +1,9 @@
+dependencies:
+- name: kanister-postgresql
+  repository: https://charts.kanister.io/
+  version: 0.14.0
+- name: profile
+  repository: https://charts.kanister.io
+  version: 0.1.0
+digest: sha256:441658f29ec4994716a61a225c61f2ccb9bcebb742b80433007f708b9757b58e
+generated: 2018-11-29T13:46:16.350308278-08:00

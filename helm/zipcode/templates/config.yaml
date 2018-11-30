@@ -1,0 +1,22 @@
+{{- if not .Values.psql.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    kasten.io/config: dataservice
+  name: {{ include "zipcode.fullname" . }}-dbconfig
+  app.kubernetes.io/instance: {{ .Release.Name }}
+  app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "zipcode.labels" . | indent 4 }}
+data:
+  dataservice.type: {{ .Values.db.dataservice.type }}
+  postgres.manager: {{ .Values.db.postgres.manager }}
+  postgres.host: {{ .Values.db.postgres.host }}
+  postgres.databases: {{ .Values.db.postgres.databases }}
+  postgres.user: {{ .Values.db.postgres.user }}
+  {{ if .Values.db.postgres.secret }}
+  postgres.secret: {{ .Values.db.postgres.secret }}
+  {{ else }}
+  postgres.secret: {{ include "zipcode.fullname" . }}-dbcreds
+  {{ end }}
+{{- end -}}

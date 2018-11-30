@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: pgtestapp
+  name: zipcodeapp
 spec:
   ports:
     - port: 8080
   selector:
-    app: pgtestapp
+    app: zipcodeapp

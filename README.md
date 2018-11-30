@@ -41,7 +41,7 @@ make push
 ## Deployment into Kubernetes
 ```bash
 # Set namespace to deploy into
-export NAMESPACE=pgtestrds
+export NAMESPACE=zipcoderds
 kubectl create namespace ${NAMESPACE}
 kubectl apply -f deploy/. --namespace ${NAMESPACE}
 ```
@@ -53,17 +53,17 @@ kubectl proxy&
 ```
 ### Get Service and Database Information
 ```bash
-http://127.0.0.1:8001/api/v1/namespaces/pgtestrds/services/pgtestapp:8080/proxy/
+http://127.0.0.1:8001/api/v1/namespaces/zipcoderds/services/zipcodeapp:8080/proxy/
 ```
 
 ### Count rows
 ```bash
-http://127.0.0.1:8001/api/v1/namespaces/pgtestrds/services/pgtestapp:8080/proxy/count
+http://127.0.0.1:8001/api/v1/namespaces/zipcoderds/services/zipcodeapp:8080/proxy/count
 ```
 
 ### Insert a new row
 ```bash
-http://127.0.0.1:8001/api/v1/namespaces/pgtestrds/services/pgtestapp:8080/proxy/insert
+http://127.0.0.1:8001/api/v1/namespaces/zipcoderds/services/zipcodeapp:8080/proxy/insert
 ```
 
 

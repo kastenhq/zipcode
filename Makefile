@@ -13,10 +13,10 @@
 # limitations under the License.
 
 # The binary to build (just the basename).
-BIN := pgtest
+BIN := zipcode
 
 # This repo's root import path (under GOPATH).
-PKG := github.com/kastenhq/pgtest
+PKG := github.com/kastenhq/zipcode
 
 # Where to push the docker image.
 REGISTRY ?= kastenio

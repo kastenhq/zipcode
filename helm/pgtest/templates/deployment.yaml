@@ -1,0 +1,84 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "pgtest.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "pgtest.name" . }}
+    helm.sh/chart: {{ include "pgtest.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{ include "pgtest.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "pgtest.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "pgtest.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          env:
+          - name: PG_HOST
+            {{- if .Values.psql.enabled }}
+            value: {{ .Release.Name }}-psql
+            {{- else }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "pgtest.fullname" . }}-dbconfig
+                key: postgres.host
+            {{- end }}
+          - name: PG_DBNAME
+            {{- if .Values.psql.enabled }}
+            value: {{ default "" .Values.psql.postgresDatabase | quote }}
+            {{- else }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "pgtest.fullname" . }}-dbconfig
+                key: postgres.databases
+            {{- end }}
+          - name: PG_USER
+            {{- if .Values.psql.enabled }}
+            value: {{ default "postgres" .Values.psql.postgresUser | quote }}
+            {{- else }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ include "pgtest.fullname" . }}-dbconfig
+                key: postgres.user
+            {{- end }}
+          - name: PG_PASSWORD
+            valueFrom:
+              secretKeyRef:
+{{ include "pgtest.pwd.secret" . | indent 16 }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

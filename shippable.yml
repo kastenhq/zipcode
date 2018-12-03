@@ -10,7 +10,7 @@ vote:
 
 build:
   pre_ci_boot:
-    options: "-e HOME=/root -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker"
+    options: "-e HOME=/root -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -v /var/run/docker.sock:/var/run/docker.sock"
 
   ci:
     - make build

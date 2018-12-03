@@ -26,8 +26,10 @@ build:
     - export GO111MODULE=on
     - go mod download
     - go build -v ./cmd/zipcode
+    - docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 init --upgrade --wait
+    - docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 add kanister https://charts.kanister.io/
     - |
-      docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 repo add kanister https://charts.kanister.io/ && helm install kanister/kanister-postgresql \
+      docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 repo helm install kanister/kanister-postgresql \
       -n zipcode-"${BRANCH}-${BUILD_NUMBER}" \
       --namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" \
       --set postgresDatabase=zipcode \

@@ -12,7 +12,7 @@ resources:
 
   - name: zipcode-k8s-cluster
     type: cliConfig
-    integration: "zipcode-k8s"
+    integration: zipcode-k8s
 
   - name: zipcode-img
     type: image

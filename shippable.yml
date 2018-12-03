@@ -17,7 +17,8 @@ vote:
 build:
 
   pre_ci:
-    - kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
+    - echo ${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT} > kubectl_cfg
+    - KUBECONFIG=kubectl_cfg kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
 
   pre_ci_boot:
     options: " -t -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -v /var/run/docker.sock:/var/run/docker.sock"
@@ -26,7 +27,8 @@ build:
     - go build ./..
 
   on_success:
-    - kubectl delete namespace "${BRANCH}-${BUILD_NUMBER}"
+    - echo ${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT} > kubectl_cfg
+    - KUBECONFIG=kubectl_cfg kubectl delete namespace "${BRANCH}-${BUILD_NUMBER}"
     - shipctl post_resource_state "zipcode-img" "versionName" "${BRANCH}.${BUILD_NUMBER}"
 
 

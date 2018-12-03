@@ -5,6 +5,7 @@ go:
 
 env:
   - GO111MODULE=on
+  - KUBECONFIG=kubectl_cfg
 
 vote:
   on_success:
@@ -17,18 +18,16 @@ vote:
 build:
 
   pre_ci:
-    - env
-    - ls -l ${ZIPCODEK8SCFG_STATE}
     - echo -e "${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT}" > kubectl_cfg
-    - cat kubectl_cfg
-    - KUBECONFIG=kubectl_cfg kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
+    - kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
 
   ci:
-    - go build ./..
+    - go mod download
+    - go build -v ./cmd/zipcode
 
   on_success:
-    - echo ${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT} > kubectl_cfg
-    - KUBECONFIG=kubectl_cfg kubectl delete namespace "${BRANCH}-${BUILD_NUMBER}"
+    - echo -e "${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT}" > kubectl_cfg
+    - kubectl delete namespace "${BRANCH}-${BUILD_NUMBER}"
     - shipctl post_resource_state "zipcode-img" "versionName" "${BRANCH}.${BUILD_NUMBER}"
 
 

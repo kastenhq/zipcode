@@ -27,9 +27,9 @@ build:
     - go mod download
     - go build -v ./cmd/zipcode
     - docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 init --upgrade --wait
-    - docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 add kanister https://charts.kanister.io/
+    - docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 repo add kanister https://charts.kanister.io/
     - |
-      docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 repo helm install kanister/kanister-postgresql \
+      docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 install kanister/kanister-postgresql \
       -n zipcode-"${BRANCH}-${BUILD_NUMBER}" \
       --namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" \
       --set postgresDatabase=zipcode \
@@ -37,6 +37,10 @@ build:
       --set postgresUser=admin \
       --wait
     - kubectl get all -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
+    - kubectl port-forward --namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" svc/"zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" 5432:5432 &
+    - export pf_pid="${!}"
+    - envdir ./env go test -v ./pkg/zipcode/ -run TestResetInsert -count 1
+    - kill -9 ${pf_pid}
 
 
   on_success:

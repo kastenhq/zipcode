@@ -6,9 +6,9 @@ resources:
       sourceName: kastenhq/zipcode
       branch: master
 
-  - name: kanister-dockercli
+  - name: zipcode-dockercli
     type: cliConfig
-    integration: kanister-dockerhub
+    integration: zipcode-dockerhub
 
   - name: zipcode-k8s-cfg
     type: cliConfig
@@ -16,7 +16,7 @@ resources:
 
   - name: zipcode-img
     type: image
-    integration: kanister-dockerhub
+    integration: zipcode-dockerhub
     pointer:
       sourceName: "github.com/kastenhq/zipcode"
       isPull: false

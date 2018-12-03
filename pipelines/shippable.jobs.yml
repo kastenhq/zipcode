@@ -6,6 +6,6 @@ jobs:
     # Specify resources (service images) updated by CI
     steps:
       - IN: zipcode_git
-      - IN: kanister-dockerhub
+      - IN: zipcode-dockerhub
       - IN:  zipcode-k8s-cfg
       - OUT: zipcode-img

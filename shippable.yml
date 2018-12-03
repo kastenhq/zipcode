@@ -1,0 +1,31 @@
+language: none
+
+vote:
+  on_success:
+    Verified: 1
+    Code-Review: 2
+  on_failure:
+    Verified: -1
+    Code-Review: -2
+
+build:
+  pre_ci_boot:
+    options: "-e HOME=/root -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker"
+
+  ci:
+    - make build
+
+  post_ci:
+    - sed -e 's|ARG_BIN|zipcode|g' -e 's|ARG_ARCH|amd64|g' -e 's|ARG_FROM|alpine|g' Dockerfile.in > Dockerfile
+    - pushd bin/amd64/
+    - docker build -t github.com/kastenhq/zipcode:${ZIPCODE_GIT_COMMIT} -f ../../Dockerfile .
+    - popd
+    - if [ "$BRANCH" == "master" ]; then docker push github.com/kastenhq/zipcode:${ZIPCODE_GIT_COMMIT}; shipctl post_resource_state "zipcode-img" "versionName" ${ZIPCODE_GIT_COMMIT}; fi
+
+  on_success:
+    - ./ship.sh build_on_success
+
+integrations:
+  hub:
+    - integrationName: dockerhub-kastenio
+      type: dockerRegistryLogin

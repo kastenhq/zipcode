@@ -1,0 +1,18 @@
+resources:
+  - name: zipcode_git
+    type: gitRepo
+    integration: github
+    pointer:
+      sourceName: kastenhq/zipcode
+      branch: master
+  - name: kanister-dockercli
+    type: cliConfig
+    integration: kanister-dockerhub
+  - name: zipcode-img
+    type: image
+    integration: kanister-dockerhub
+    pointer:
+      sourceName: "github.com/kastenhq/zipcode"
+      isPull: false
+    seed:
+      versionName: "latest"

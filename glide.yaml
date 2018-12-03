@@ -1,3 +1,0 @@
-package: github.com/kastenhq/zipcode
-import:
-- package: github.com/lib/pq

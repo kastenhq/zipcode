@@ -1,4 +1,7 @@
-language: none
+language: go
+
+go:
+  - 1.9
 
 vote:
   on_success:

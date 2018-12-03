@@ -27,6 +27,9 @@ build:
 
   on_success:
     - kubectl delete namespace "${BRANCH}-${BUILD_NUMBER}"
+    - shipctl post_resource_state "zipcode-img" "versionName" "${BRANCH}.${BUILD_NUMBER}"
+
+
 
 integrations:
   hub:

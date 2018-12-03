@@ -8,7 +8,7 @@ resources:
 
   - name: zipcode-dockercli
     type: cliConfig
-    integration: zipcode-dockerhub
+    integration: dockerhub-kastenio
 
   - name: zipcode-k8s-cfg
     type: cliConfig
@@ -16,7 +16,7 @@ resources:
 
   - name: zipcode-img
     type: image
-    integration: zipcode-dockerhub
+    integration: dockerhub-kastenio
     pointer:
       sourceName: "github.com/kastenhq/zipcode"
       isPull: false

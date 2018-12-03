@@ -5,9 +5,15 @@ resources:
     pointer:
       sourceName: kastenhq/zipcode
       branch: master
+
   - name: kanister-dockercli
     type: cliConfig
     integration: kanister-dockerhub
+
+  - name: zipcode-k8s-cluster
+    type: cliConfig
+    integration: "zipcode-k8s"
+
   - name: zipcode-img
     type: image
     integration: kanister-dockerhub

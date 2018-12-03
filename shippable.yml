@@ -1,7 +1,10 @@
 language: go
 
 go:
-  - 1.9
+  - 1.11
+
+env:
+  - GO111MODULE=on
 
 vote:
   on_success:
@@ -12,24 +15,22 @@ vote:
     Code-Review: -2
 
 build:
+
+  pre_ci:
+    - kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
+
   pre_ci_boot:
-    container: false
-    #options: " -t -e HOME=/root -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -v /var/run/docker.sock:/var/run/docker.sock"
+    options: " -t -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -v /var/run/docker.sock:/var/run/docker.sock"
 
   ci:
-    - make build
-
-  post_ci:
-    - sed -e 's|ARG_BIN|zipcode|g' -e 's|ARG_ARCH|amd64|g' -e 's|ARG_FROM|alpine|g' Dockerfile.in > Dockerfile
-    - pushd bin/amd64/
-    - docker build -t github.com/kastenhq/zipcode:${ZIPCODE_GIT_COMMIT} -f ../../Dockerfile .
-    - popd
-    - if [ "$BRANCH" == "master" ]; then docker push github.com/kastenhq/zipcode:${ZIPCODE_GIT_COMMIT}; shipctl post_resource_state "zipcode-img" "versionName" ${ZIPCODE_GIT_COMMIT}; fi
+    - go build ./..
 
   on_success:
-    - ./ship.sh build_on_success
+    - kubectl delete namespace "${BRANCH}-${BUILD_NUMBER}"
 
 integrations:
   hub:
     - integrationName: dockerhub-kastenio
       type: dockerRegistryLogin
+    - integrationName: zipcode-k8s-cluster
+      type: cliConfig

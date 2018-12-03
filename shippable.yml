@@ -18,13 +18,9 @@ build:
 
   pre_ci:
     - env
-    - |
-      echo -e ${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT} > kubectl_cfg
-      KUBECONFIG=$(pwd)/kubectl_cfg
-      kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
-
-  pre_ci_boot:
-    options: " -t -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -v /var/run/docker.sock:/var/run/docker.sock"
+    - echo -e ${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT} > kubectl_cfg
+    - cat kubectl_cfg
+    - KUBECONFIG=kubectl_cfg kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
 
   ci:
     - go build ./..

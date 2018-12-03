@@ -32,5 +32,3 @@ integrations:
   hub:
     - integrationName: dockerhub-kastenio
       type: dockerRegistryLogin
-    - integrationName: zipcode-k8s-cluster
-      type: cliConfig

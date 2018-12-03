@@ -26,13 +26,14 @@ build:
     - export GO111MODULE=on
     - go mod download
     - go build -v ./cmd/zipcode
+    - docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 init
     - |
       docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 install kanister/kanister-postgresql \
       -n zipcode-"${BRANCH}-${BUILD_NUMBER}" \
       --namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" \
       --set postgresDatabase=zipcode \
       --set postgresPassword=admin \
-      --set postgresUser=admin
+      --set postgresUser=admin \
       --wait
     - kubectl get all -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
 

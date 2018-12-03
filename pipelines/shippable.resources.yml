@@ -10,7 +10,7 @@ resources:
     type: cliConfig
     integration: kanister-dockerhub
 
-  - name: zipcode-k8s-cluster
+  - name: zipcode-k8s-cfg
     type: cliConfig
     integration: zipcode-k8s
 

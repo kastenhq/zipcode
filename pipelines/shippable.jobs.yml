@@ -7,5 +7,5 @@ jobs:
     steps:
       - IN: zipcode_git
       - IN: kanister-dockerhub
-      - IN:  zipcode-k8s-cluster
+      - IN:  zipcode-k8s-cfg
       - OUT: zipcode-img

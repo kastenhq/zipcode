@@ -28,11 +28,6 @@ build:
   on_success:
     - kubectl delete namespace "${BRANCH}-${BUILD_NUMBER}"
 
-resources:
-  - name: zipcode-k8s-cluster
-    type: cliConfig
-    integration: zipcode-k8s
-
 integrations:
   hub:
     - integrationName: dockerhub-kastenio

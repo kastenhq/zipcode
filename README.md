@@ -1,69 +1,71 @@
-# PostgreSQL test application
+# Zipcode
 
-This is a sample application that uses a PostgreSQL database and consumes the DB configuration via a Kubernetes ConfigMap and Secret.
+Store your orders by Zipcode! A demo app for [CICD, Kubernetes, and Databases:
+Better Together
+](https://kccna18.sched.com/event/GrSq/cicd-kubernetes-and-databases-better-together-niraj-tolia-tom-manville-kasten)
 
-This allows the configuration to be changed easily based on environment the application is deployed in.
+## Prerequisites
 
-For example, the ConfigMap and Secret when using an AWS RDS instance are as follows
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  annotations:
-    kasten.io/config: dataservice
-  name: dbconfig
-data:
-  dataservice.type: postgres
-  postgres.manager: awsrds
-  postgres.host: dbendpoint.adsadasa.us-west-2.rds.amazonaws.com
-  postgres.databases: mypgsqldb
-  postgres.user: postgres
-  postgres.secret: dbcreds # name of K8s secret in the same namespace
+### Go Setup
 
----
+* go 1.11.x+
 
-apiVersion: v1
-kind: Secret
-metadata:
-  name: dbcreds
-type: Opaque
-data:
-  password: <BASE64 encoded password>
-  ```
-
-## Build/Package application
 ```bash
-make clean
-make container
-make push
+# Ensure go modules are enabled
+export GO111MODULE=on
+
+# Download dependencies
+go mod download
 ```
 
-## Deployment into Kubernetes
+Test Install
 ```bash
-# Set namespace to deploy into
-export NAMESPACE=pgtestrds
-kubectl create namespace ${NAMESPACE}
-kubectl apply -f deploy/. --namespace ${NAMESPACE}
+go build -v ./cmd/zipcode
 ```
 
-## Testing the application
-Use `kubectl proxy` to connect to the service in the cluster
-```
-kubectl proxy&
-```
-### Get Service and Database Information
+### PostgreSQL
+
+This app requires a access to a Postgres instance.
+
+We recommend installing it using the Kanister example [helm chart](https://docs.kanister.io/helm_instructions/pgsql_instructions.html).
+
+Assuming your settings match those in `./env`, you can run:
 ```bash
-http://127.0.0.1:8001/api/v1/namespaces/pgtestrds/services/pgtestapp:8080/proxy/
+kubectl port-forward --namespace zipcode svc/postgresql-kanister-postgresql 5432:5432
+docker run --network host -it --rm jbergknoff/postgresql-client postgresql://admin:admin@127.0.0.1:5432/zipcode
 ```
 
-### Count rows
+## Local Testing
+
+You can run tests locally, but you'll still need to connect to a PostgreSQL
+instance.
 ```bash
-http://127.0.0.1:8001/api/v1/namespaces/pgtestrds/services/pgtestapp:8080/proxy/count
+# Expost PostgreSQL at `localhost:5432`
+kubectl port-forward --namespace zipcode svc/postgresql-kanister-postgresql 5432:5432
+
+# Use environment vars in `./env` to connect to PostgreSQL and run unit tests.
+envdir ./env go test -v ./pkg/zipcode/ -run TestResetInsert -count 1
+
+# Run the full server. The service is available at `localhost:8000`.
+envdir env go run -v ./cmd/zipcode/
 ```
 
-### Insert a new row
+
+## Deploy
+
+Build and push docker image
+
 ```bash
-http://127.0.0.1:8001/api/v1/namespaces/pgtestrds/services/pgtestapp:8080/proxy/insert
+# We suggest adding a version tag to the image. You'll need to update
+# ./deploy/deployment.yaml
+docker build . -t kastenhq/zipcode
 ```
 
+Deploy service to Kubernetes
+```bash
+kubectl apply -f ./deploy
 
+kubectl port-forward --namespace zipcode svc/zipcode 8000:8000
+```
+
+The zipcode app will now be available at [localhost:8000]

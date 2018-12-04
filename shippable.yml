@@ -28,7 +28,7 @@ build:
     - alias kubectl='docker run --rm -t -p 5432 --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-kubectl:v1.11.5'
     - go mod download
     - go build -v ./cmd/zipcode
-    - helm init --upgrade --wait
+    - helm init --force-upgrade --wait
     - helm repo add kanister https://charts.kanister.io/
     - |
       helm install kanister/kanister-postgresql \
@@ -48,6 +48,7 @@ build:
     - go test -v ./pkg/zipcode/ -run TestCities -count 1
     - kill -9 ${pf_pid}
     - unalias helm
+    - unalias kubectl
 
 
   on_success:

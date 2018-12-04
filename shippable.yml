@@ -18,7 +18,7 @@ build:
     - KUBECONFIG=kubectl_cfg kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
 
   pre_ci_boot:
-    options: "-t -v ${SHIPPABLE_BUILD_DIR} --net=host -v /var/run/docker.sock:/var/run/docker.sock"
+    options: "-t -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -p 5432 -v /var/run/docker.sock:/var/run/docker.sock"
 
   ci:
     - echo -e "${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT}" > kubectl_cfg

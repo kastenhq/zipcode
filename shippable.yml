@@ -37,6 +37,7 @@ build:
       --set postgresUser=admin \
       --wait
     - sleep 20
+    - kubectl version
     - kubectl get all -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
     - kubectl get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
     - kubectl port-forward pod $(kubectl get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}" --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &

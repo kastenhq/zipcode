@@ -13,7 +13,7 @@ kubectl_cmd=( docker run --rm -ti -p 5432 -p 9000-9030 -p 41134 --volumes-from $
 
 backup_name=$(${kubectl_cmd[@]:-kubectl} get restorepoints -n "${ns}" -ojson | jq ' .items | sort_by(.metadata.creationTimestamp) | .[-1] | .metadata.name ')
 
-cat > restore.yaml << EOF
+cat > ${SHIPPABLE_BUILD_DIR}/restore.yaml << EOF
 apiVersion: actions.kio.kasten.io/v1alpha1
 kind: RestoreAction
 metadata:
@@ -30,7 +30,7 @@ spec:
     pointInTime: 2030-01-01T00:00:00Z
 EOF
 
-${kubectl_cmd[@]:-kubectl} create -n ${ns} -f ~/restore.yaml
+${kubectl_cmd[@]:-kubectl} create -n ${ns} -f ${SHIPPABLE_BUILD_DIR}/restore.yaml
 
 restore_name=$(${kubectl_cmd[@]:-kubectl} get restoreactions -n "${ns}" -ojson | jq -r ' .items | sort_by(.metadata.creationTimestamp) | .[-1] | .metadata.name ')
 

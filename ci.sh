@@ -13,8 +13,8 @@ set -o xtrace
 export KUBECONFIG=${kubectl_cmd[@]}_cfg
 export GO111MODULE=on
 
-export ${helm_cmd[@]}_cmd=( docker run --rm -t --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/${kubectl_cmd[@]}_cfg lachlanevenson/k8s-${helm_cmd[@]}:v2.11.0 )
-export ${kubectl_cmd[@]}_cmd=( docker run --rm -ti -p 5432 -p 9000-9030 -p 41134 --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/${kubectl_cmd[@]}_cfg lachlanevenson/k8s-${kubectl_cmd[@]}:v1.11.5 )
+export helm_cmd=( docker run --rm -t --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/${kubectl_cmd[@]}_cfg lachlanevenson/k8s-${helm_cmd[@]}:v2.11.0 )
+export kubectl_cmd=( docker run --rm -ti -p 5432 -p 9000-9030 -p 41134 --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/${kubectl_cmd[@]}_cfg lachlanevenson/k8s-${kubectl_cmd[@]}:v1.11.5 )
 go mod download
 go build -v ./cmd/zipcode
 

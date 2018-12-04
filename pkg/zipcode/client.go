@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 const contentType = "text/html"
@@ -43,4 +44,18 @@ func (c *client) insertOrder(zips ...string) error {
 	}
 	log.Println("Insert Order Response", string(b))
 	return nil
+}
+
+func (c *client) orderCountByCity() ([]string, error) {
+	u := c.baseURL
+	u.Path = "cities"
+	r, err := http.Post(u.String(), contentType, nil)
+	if err != nil {
+		return nil, err
+	}
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(string(b), "\n"), nil
 }

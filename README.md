@@ -32,8 +32,9 @@ We recommend installing it using the Kanister example [helm chart](https://docs.
 
 ```bash
 # Install Kanister-enabled PostgreSQL
-$ helm install kanister/kanister-postgresql -n zipcode \
-    --namespace postgresql \
+$ helm install kanister/kanister-postgresql \
+    --namespace zipcode \
+    --name postgresql \
     --set postgresDatabase=zipcode \
     --set postgresPassword=admin \
     --set postgresUser=admin
@@ -55,6 +56,7 @@ $ kubectl port-forward --namespace zipcode svc/postgresql-kanister-postgresql 54
 
 # Use environment vars in `./env` to connect to PostgreSQL and run unit tests.
 $ envdir ./env go test -v ./pkg/zipcode/ -run TestResetInsert -count 1
+$ envdir ./env go test -v ./pkg/zipcode/ -run TestCities -count 1
 
 # Run the full server. The service is available at `localhost:8000`.
 $ envdir env go run -v ./cmd/zipcode/
@@ -72,7 +74,7 @@ $ docker build . -t kastenhq/zipcode
 
 Deploy service to Kubernetes and expose it locally.
 ```bash
-$ kubectl apply -f ./deploy
+$ kubectl -n zipcode apply -f ./deploy
 
 $ kubectl port-forward --namespace zipcode svc/zipcode 8000:8000
 ```

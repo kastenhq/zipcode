@@ -43,7 +43,7 @@ build:
     - kubectl port-forward $(kubectl get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}" --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &
     - export pf_pid="${!}"
     - for fi in $(ls env/); do export $fi=$(cat env/$fi); done
-    - go test -v ./pkg/zipcode/ -run TestResetInsert -count 1
+    - go test -v ./pkg/zipcode/ -run TestCities -count 1
     - kill -9 ${pf_pid}
 
 

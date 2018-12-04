@@ -56,11 +56,26 @@ func TestResetInsert(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	return
-	for _, zip := range testZips {
-		err := c.insertOrder(zip)
+}
+
+func TestCities(t *testing.T) {
+	s, err := New()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	go func() {
+		err := s.ListenAndServe()
 		if err != nil {
-			t.Fatal(err.Error())
+			t.Error(err.Error())
 		}
+	}()
+	defer s.Close()
+	c := newClient(testHost)
+	cities, err := c.orderCountByCity()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	if len(cities) == 0 {
+		t.Fatal("No cities returned: please test with data")
 	}
 }

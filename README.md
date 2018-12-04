@@ -60,7 +60,6 @@ $ envdir ./env go test -v ./pkg/zipcode/ -run TestResetInsert -count 1
 $ envdir env go run -v ./cmd/zipcode/
 ```
 
-
 ## Deploy
 
 Build and push docker image
@@ -71,7 +70,7 @@ Build and push docker image
 $ docker build . -t kastenhq/zipcode
 ```
 
-Deploy service to Kubernetes
+Deploy service to Kubernetes and expose it locally.
 ```bash
 $ kubectl apply -f ./deploy
 

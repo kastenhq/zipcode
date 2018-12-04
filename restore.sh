@@ -9,6 +9,8 @@ set -o xtrace
 target="${1}"
 ns="kasten-io"
 
+alias kubectl='docker run --rm -ti -p 5432 -p 9000-9030 -p 41134 --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-kubectl:v1.11.5'
+
 kubectl get restorepoints -n "${ns}" -o yaml
 
 kubectl version

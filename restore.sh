@@ -9,9 +9,9 @@ set -o xtrace
 target="${1}"
 ns="kasten-io"
 
-backup_name=$(kubectl get restorepoints -n "${ns}" -ojson | jq ' .items | sort_by(.metadata.creationTimestamp) | .[-1] | .metadata.name ')
+backup_name=$(${kubectl_cmd[@]:-kubectl} get restorepoints -n "${ns}" -ojson | jq ' .items | sort_by(.metadata.creationTimestamp) | .[-1] | .metadata.name ')
 
-cat << EOF | kubectl create -n ${ns} -f -
+cat << EOF | ${kubectl_cmd[@]:-kubectl} create -n ${ns} -f -
 apiVersion: actions.kio.kasten.io/v1alpha1
 kind: RestoreAction
 metadata:
@@ -28,13 +28,13 @@ spec:
     pointInTime: 2030-01-01T00:00:00Z
 EOF
 
-restore_name=$(kubectl get restoreactions -n "${ns}" -ojson | jq -r ' .items | sort_by(.metadata.creationTimestamp) | .[-1] | .metadata.name ')
+restore_name=$(${kubectl_cmd[@]:-kubectl} get restoreactions -n "${ns}" -ojson | jq -r ' .items | sort_by(.metadata.creationTimestamp) | .[-1] | .metadata.name ')
 
 state=""
 while [[ "${state}" != "Passed" ]] && [[ "${state}" != "Failed" ]]
 do
     sleep 3
-    state=$(kubectl get restoreactions -n "${ns}" "${restore_name}" -ojson | jq -r '.status.state')
+    state=$(${kubectl_cmd[@]:-kubectl} get restoreactions -n "${ns}" "${restore_name}" -ojson | jq -r '.status.state')
 done
 
 if [[ "${state}" == "Failed" ]]

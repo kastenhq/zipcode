@@ -39,7 +39,8 @@ build:
     - kubectl get all -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
     - kubectl port-forward --namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" svc/"zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" 5432:5432 &
     - export pf_pid="${!}"
-    - envdir ./env go test -v ./pkg/zipcode/ -run TestResetInsert -count 1
+    - for fi in $(ls env/); do export $fi=$(cat env/$fi); done
+    - go test -v ./pkg/zipcode/ -run TestResetInsert -count 1
     - kill -9 ${pf_pid}
 
 

@@ -18,7 +18,7 @@ build:
     - KUBECONFIG=kubectl_cfg kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
 
   pre_ci_boot:
-    options: "-e HOME=${SHIPPABLE_BUILD_DIR} -t -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -v /var/run/docker.sock:/var/run/docker.sock"
+    options: "-t -v ${SHIPPABLE_BUILD_DIR} --expose=9000-9030 -v /var/run/docker.sock:/var/run/docker.sock"
 
   ci:
     - echo -e "${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT}" > kubectl_cfg
@@ -26,10 +26,10 @@ build:
     - export GO111MODULE=on
     - go mod download
     - go build -v ./cmd/zipcode
-    - docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 init --upgrade --wait
-    - docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 repo add kanister https://charts.kanister.io/
+    - docker run --rm -t --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 init --upgrade --wait
+    - docker run --rm -t --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 repo add kanister https://charts.kanister.io/
     - |
-      docker run --rm -t --volumes-from $(hostname) -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 install kanister/kanister-postgresql \
+      docker run --rm -t --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0 install kanister/kanister-postgresql \
       -n zipcode-"${BRANCH}-${BUILD_NUMBER}" \
       --namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" \
       --set postgresDatabase=zipcode \

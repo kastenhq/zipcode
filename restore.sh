@@ -9,6 +9,8 @@ set -o xtrace
 target="${1}"
 ns="kasten-io"
 
+kubectl get restorepoints -n "${ns}" -o yaml
+
 backup_name=$(kubectl get restorepoints -n "${ns}" -ojson | jq ' .items | sort_by(.metadata.creationTimestamp) | .[-1] | .metadata.name ')
 
 cat << EOF | kubectl create -n ${ns} -f -

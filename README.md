@@ -52,6 +52,9 @@ You can run tests locally, but you'll still need to connect to a PostgreSQL
 instance.
 ```bash
 # Expost PostgreSQL at `localhost:5432`
+# Test Database
+$ kubectl port-forward --namespace zipcode-test svc/postgresql-test-kanister-postgresql 5432:5432
+# Prod Database
 $ kubectl port-forward --namespace zipcode svc/postgresql-kanister-postgresql 5432:5432
 
 # Use environment vars in `./env` to connect to PostgreSQL and run unit tests.

@@ -2,6 +2,7 @@ package zipcode
 
 import (
 	"testing"
+	"time"
 )
 
 const testHost = "localhost:8000"
@@ -66,15 +67,17 @@ func TestCities(t *testing.T) {
 	go func() {
 		err := s.ListenAndServe()
 		if err != nil {
-			t.Error(err.Error())
+			t.Log(err.Error())
 		}
 	}()
 	defer s.Close()
+	time.Sleep(time.Second)
 	c := newClient(testHost)
 	cities, err := c.orderCountByCity()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
+	t.Logf("Orders in %d cities recorded!", len(cities))
 	if len(cities) == 0 {
 		t.Fatal("No cities returned: please test with data")
 	}

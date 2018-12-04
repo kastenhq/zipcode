@@ -28,10 +28,10 @@ build:
     - export kubectl_cmd=( docker run --rm -ti -p 5432 -p 9000-9030 -p 41134 --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-kubectl:v1.11.5 )
     - go mod download
     - go build -v ./cmd/zipcode
-    - helm init --upgrade --force-upgrade --wait
-    - helm repo add kanister https://charts.kanister.io/
+    - ${helm_cmd[@]}  init --upgrade --force-upgrade --wait
+    - ${helm_cmd[@]} repo add kanister https://charts.kanister.io/
     - |
-      helm install kanister/kanister-postgresql \
+      ${helm_cmd[@]} install kanister/kanister-postgresql \
       -n "zipcode-${BRANCH}-${BUILD_NUMBER}" \
       --namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" \
       --set postgresDatabase=zipcode \
@@ -40,15 +40,13 @@ build:
       --wait
     - sleep 20
     - ./restore.sh "postgresql-${BRANCH}-${BUILD_NUMBER}"
-    - kubectl get all -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
-    - kubectl get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
-    - kubectl port-forward $(kubectl get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}" --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &
+    - ${kubectl_cmd[@]} get all -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
+    - ${kubectl_cmd[@]} get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
+    - ${kubectl_cmd[@]} port-forward $(kubectl get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}" --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &
     - export pf_pid="${!}"
     - for fi in $(ls env/); do export $fi=$(cat env/$fi); done
     - go test -v ./pkg/zipcode/ -run TestCities -count 1
     - kill -9 ${pf_pid}
-    - unalias helm
-    - unalias kubectl
 
 
   on_success:

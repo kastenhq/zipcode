@@ -9,6 +9,8 @@ set -o xtrace
 target="${1}"
 ns="kasten-io"
 
+kubectl_cmd=( docker run --rm -ti -p 5432 -p 9000-9030 -p 41134 --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-kubectl:v1.11.5 )
+
 backup_name=$(${kubectl_cmd[@]:-kubectl} get restorepoints -n "${ns}" -ojson | jq ' .items | sort_by(.metadata.creationTimestamp) | .[-1] | .metadata.name ')
 
 cat << EOF | ${kubectl_cmd[@]:-kubectl} create -n ${ns} -f -

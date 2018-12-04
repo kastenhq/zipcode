@@ -25,7 +25,7 @@ build:
     - export KUBECONFIG=kubectl_cfg
     - export GO111MODULE=on
     - alias helm='docker run --rm -t --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-helm:v2.11.0'
-    - alias kubectl='docker run --rm -t -p 5432 --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-kubectl:v1.11.5'
+    - alias kubectl='docker run --rm -t -p 5432 -p 9000-9030 -p 41134 --volumes-from $(hostname) -e HOME=${SHIPPABLE_BUILD_DIR} -e KUBECONFIG=${SHIPPABLE_BUILD_DIR}/kubectl_cfg lachlanevenson/k8s-kubectl:v1.11.5'
     - go mod download
     - go build -v ./cmd/zipcode
     - helm init --upgrade --force-upgrade --wait

@@ -82,4 +82,4 @@ $ kubectl -n zipcode apply -f ./deploy
 $ kubectl port-forward --namespace zipcode svc/zipcode 8000:8000
 ```
 
-The zipcode app will now be available at [localhost:8000]
+The zipcode app will now be available at [localhost:8000/orders]

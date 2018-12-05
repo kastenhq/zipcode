@@ -39,7 +39,7 @@ ${kubectl_cmd[@]:-kubectl} create -n ${ns} -f ${SHIPPABLE_BUILD_DIR}/restore.yam
 restore_name=$(${kubectl_cmd[@]:-kubectl} get restoreactions -n "${ns}" -ojson | jq -r ' .items | sort_by(.metadata.creationTimestamp) | .[-1] | .metadata.name ')
 
 state=""
-while [[ "${state}" != "Passed" ]] && [[ "${state}" != "Failed" ]]
+while [[ "${state}" != "Complete" ]] && [[ "${state}" != "Failed" ]]
 do
     sleep 3
     state=$(${kubectl_cmd[@]:-kubectl} get restoreactions -n "${ns}" "${restore_name}" -ojson | jq -r '.status.state')
@@ -49,3 +49,5 @@ if [[ "${state}" == "Failed" ]]
 then
     exit 1
 fi
+
+echo Restore Complete

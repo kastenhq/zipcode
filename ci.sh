@@ -43,5 +43,3 @@ export pf_pid="${!}"
 for fi in $(ls env/); do export $fi=$(cat env/$fi); done
 
 go test -v ./pkg/zipcode/ -run TestCities -count 1
-
-kill -9 ${pf_pid}

@@ -1,6 +1,7 @@
 package zipcode
 
 import (
+	"strings"
 	"testing"
 	"time"
 )
@@ -77,8 +78,11 @@ func TestCities(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	t.Logf("Orders in %d cities recorded!", len(cities))
 	if len(cities) == 0 {
 		t.Fatal("No cities returned: please test with data")
 	}
+	if strings.Contains(cities[0], "could not get city") {
+		t.Fatal(cities[0])
+	}
+	t.Logf("Orders in %d cities recorded!", len(cities))
 }

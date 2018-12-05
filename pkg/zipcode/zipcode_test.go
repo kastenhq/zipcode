@@ -1,6 +1,8 @@
 package zipcode
 
 import (
+	"fmt"
+	"math/rand"
 	"strings"
 	"testing"
 	"time"
@@ -37,7 +39,23 @@ var testZips = []string{
 	"90233",
 }
 
-func TestResetInsert(t *testing.T) {
+func randSuffix() string {
+	return fmt.Sprintf("-%4d", rand.Int31n(10000))
+}
+
+func TestResetInsertProd(t *testing.T) {
+	tz := make([]string, len(testZips))
+	for _, z := range testZips {
+		tz = append(tz, z+"-0100")
+	}
+	testResetInsert(t, tz)
+}
+
+func TestResetInsertTest(t *testing.T) {
+	testResetInsert(t, testZips)
+}
+
+func testResetInsert(t *testing.T, tz []string) {
 	s, err := New()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -54,7 +72,7 @@ func TestResetInsert(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	err = c.insertOrder(testZips...)
+	err = c.insertOrder(tz...)
 	if err != nil {
 		t.Fatal(err.Error())
 	}

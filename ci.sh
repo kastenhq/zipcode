@@ -38,7 +38,7 @@ sleep 20
 #${kubectl_cmd[@]} get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
 #${kubectl_cmd[@]} port-forward $(${kubectl_cmd[@]} get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}" --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &
 kubectl get pods --selector=app=postgresql-kanister-postgresql -n zipcode --output=jsonpath={.items..metadata.name}
-kubectl port-forward $(kubectl get pods --selector=app=postgresql-kanister-postgresql -n zipcode --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &
+kubectl port-forward $(kubectl get pods --selector=app=postgresql-kanister-postgresql -n zipcode --output=jsonpath={.items..metadata.name}) -n zipcode 5432:5432 &
 
 sleep 3
 

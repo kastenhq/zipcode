@@ -23,22 +23,21 @@ go build -v ./cmd/zipcode
 ${helm_cmd[@]} init --upgrade --force-upgrade --wait
 ${helm_cmd[@]} repo add kanister https://charts.kanister.io/
 ${helm_cmd[@]} install kanister/kanister-postgresql \
--n "zipcode-${BRANCH}-${BUILD_NUMBER}" \
---namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" \
---set postgresDatabase=zipcode \
---set postgresPassword=admin \
---set postgresUser=admin \
---wait
+#-n "zipcode-${BRANCH}-${BUILD_NUMBER}" \
+#--namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" \
+#--set postgresDatabase=zipcode \
+#--set postgresPassword=admin \
+#--set postgresUser=admin \
+#--wait
 
 sleep 20
 
-./restore.sh "postgresql-${BRANCH}-${BUILD_NUMBER}"
+#./restore.sh "postgresql-${BRANCH}-${BUILD_NUMBER}"
 
 ${kubectl_cmd[@]} get all -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
 ${kubectl_cmd[@]} get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
-${kubectl_cmd[@]} port-forward $(${kubectl_cmd[@]} get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}" --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &
-
-sleep 10
+#${kubectl_cmd[@]} port-forward $(${kubectl_cmd[@]} get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}" --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &
+${kubectl_cmd[@]} port-forward $(${kubectl_cmd[@]} get pods --selector=app=postgresql-kanister-postgresql -n zipcode --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &
 
 for fi in $(ls env/); do export $fi=$(cat env/$fi); done
 

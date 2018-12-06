@@ -40,13 +40,13 @@ var testZips = []string{
 }
 
 func randSuffix() string {
-	return fmt.Sprintf("-%4d", rand.Int31n(10000))
+	return fmt.Sprintf("-%04d", rand.Int31n(10000))
 }
 
 func TestResetInsertProd(t *testing.T) {
-	tz := make([]string, len(testZips))
+	tz := make([]string, 0, len(testZips))
 	for _, z := range testZips {
-		tz = append(tz, z+"-0100")
+		tz = append(tz, z+randSuffix())
 	}
 	testResetInsert(t, tz)
 }

@@ -38,7 +38,7 @@ ${kubectl_cmd[@]} get all -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
 ${kubectl_cmd[@]} get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}"
 ${kubectl_cmd[@]} port-forward $(${kubectl_cmd[@]} get pods --selector=app="zipcode-${BRANCH}-${BUILD_NUMBER}-kanister-postgresql" -n "postgresql-${BRANCH}-${BUILD_NUMBER}" --output=jsonpath={.items..metadata.name}) -n "postgresql-${BRANCH}-${BUILD_NUMBER}" 5432:5432 &
 
-sleep 3
+sleep 10
 
 for fi in $(ls env/); do export $fi=$(cat env/$fi); done
 

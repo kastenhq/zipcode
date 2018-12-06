@@ -20,15 +20,15 @@ export kubectl_cmd=( docker run --rm -ti -p 5432 -p 9000-9030 -p 41134 --volumes
 go mod download
 go build -v ./cmd/zipcode
 
-#${helm_cmd[@]} init --upgrade --force-upgrade --wait
-#${helm_cmd[@]} repo add kanister https://charts.kanister.io/
-#${helm_cmd[@]} install kanister/kanister-postgresql \
-#-n "zipcode-${BRANCH}-${BUILD_NUMBER}" \
-#--namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" \
-#--set postgresDatabase=zipcode \
-#--set postgresPassword=admin \
-#--set postgresUser=admin \
-#--wait
+${helm_cmd[@]} init --upgrade --force-upgrade --wait
+${helm_cmd[@]} repo add kanister https://charts.kanister.io/
+${helm_cmd[@]} install kanister/kanister-postgresql \
+-n "zipcode-${BRANCH}-${BUILD_NUMBER}" \
+--namespace "postgresql-${BRANCH}-${BUILD_NUMBER}" \
+--set postgresDatabase=zipcode \
+--set postgresPassword=admin \
+--set postgresUser=admin \
+--wait
 
 sleep 20
 

@@ -58,7 +58,7 @@ $ kubectl port-forward --namespace zipcode-test svc/postgresql-test-kanister-pos
 $ kubectl port-forward --namespace zipcode svc/postgresql-kanister-postgresql 5432:5432
 
 # Use environment vars in `./env` to connect to PostgreSQL and run unit tests.
-$ envdir ./env go test -v ./pkg/zipcode/ -run TestResetInsert -count 1
+$ envdir ./env go test -v ./pkg/zipcode/ -run TestResetInsertTest -count 1
 $ envdir ./env go test -v ./pkg/zipcode/ -run TestCities -count 1
 
 # Run the full server. The service is available at `localhost:8000`.

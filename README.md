@@ -1,6 +1,6 @@
 # Zipcode
 
-Store your orders by Zipcode! A demo app for [CICD, Kubernetes, and Databases:
+Recorde a Zipcode for your orders! A demo app for [CICD, Kubernetes, and Databases:
 Better Together
 ](https://kccna18.sched.com/event/GrSq/cicd-kubernetes-and-databases-better-together-niraj-tolia-tom-manville-kasten)
 

@@ -44,7 +44,7 @@ func randSuffix() string {
 }
 
 func TestResetInsertProd(t *testing.T) {
-	tz := make([]string, 0, len(testZips))
+	tz := make([]string, len(testZips))
 	copy(tz, testZips)
 	tz[len(tz)/3] = tz[len(tz)/3] + randSuffix()
 	testResetInsert(t, tz)

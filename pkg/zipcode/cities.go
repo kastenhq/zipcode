@@ -2660,5 +2660,11 @@ var zipToCityMap = map[string]string{
 }
 
 func zipToCity(zip string) (string, error) {
-	return "", fmt.Errorf("not implemented")
+	city, ok := zipToCityMap[zip]
+
+	if !ok {
+		return "",
+			fmt.Errorf("unable to lookup zipcode: %s", zip)
+	}
+	return city, nil
 }

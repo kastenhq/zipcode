@@ -14,9 +14,7 @@ vote:
 build:
 
   pre_ci:
-    - env
     - echo -e "${ZIPCODEK8SCFG_INTEGRATION_KUBECONFIGCONTENT}" > kubectl_cfg
-    - cat kubectl_cfg
     - KUBECONFIG=kubectl_cfg kubectl create namespace "${BRANCH}-${BUILD_NUMBER}"
 
   pre_ci_boot:

@@ -78,6 +78,7 @@ func testResetInsert(t *testing.T, tz []string) {
 }
 
 func TestCities(t *testing.T) {
+	t.SkipNow()
 	s, err := New()
 	if err != nil {
 		t.Fatal(err.Error())
